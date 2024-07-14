@@ -1,0 +1,5 @@
+*.env
+
+*_grpc.py
+*_pb2.py
+*.pyi

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package auth;
+
+import "google/protobuf/empty.proto";
+
+message RegisterRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    string tokenType = 1; // Bearer
+    string token = 2;
+}
+
+message TokenRequest {
+    string token = 1;
+}
+
+message UserIdResponse {
+    uint32 user_id = 1;
+}
+
+service AuthenticationService {
+    rpc Login(LoginRequest) returns (LoginResponse);
+    rpc Register(RegisterRequest) returns (google.protobuf.Empty);
+    rpc GetUserId(TokenRequest) returns (UserIdResponse);
+}
