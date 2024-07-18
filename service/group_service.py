@@ -4,6 +4,7 @@ import grpc
 from group_pb2_grpc import GroupServiceStub
 
 from schemas.request import group_request as requests
+from schemas.response import group_response as response
 from utils.group import (
     add_student,
     add_word_to_user,
@@ -45,7 +46,8 @@ class GroupService:
         with self.connect_to_group_service() as channel:
             client = GroupServiceStub(channel)
             try:
-                return add_word_to_user(client, add_word_to_user_request)
+                res = add_word_to_user(client, add_word_to_user_request)
+                return response.AddWordToUserResponse(word_id=res.word_id)
             except Exception as e:
                 logging.error(f"Add word to user failed: {e}")
                 raise Exception("Cannot add word to user") from e
@@ -72,16 +74,26 @@ class GroupService:
         with self.connect_to_group_service() as channel:
             client = GroupServiceStub(channel)
             try:
-                return find_group(client, find_group_request)
+                group = find_group(client, find_group_request)
+                return response.GroupResponse(
+                    user_id=group.user_id,
+                    group_id=group.group_id,
+                    title=group.title,
+                    students=group.students
+                )
             except Exception as e:
                 logging.error(f"Find group failed: {e}")
                 raise Exception("Cannot find group") from e
 
-    def find_student(self, find_student_request: requests.FindStudentRequest):
+    def find_student(self, find_student_request: requests.FindStudentRequest) -> response.StudentResponse:
         with self.connect_to_group_service() as channel:
             client = GroupServiceStub(channel)
             try:
-                return find_student(client, find_student_request)
+                student = find_student(client, find_student_request)
+                return response.StudentResponse(
+                    username=student.username,
+                    email=student.email
+                )
             except Exception as e:
                 logging.error(f"Find student failed: {e}")
                 raise Exception("Cannot find student") from e
@@ -90,7 +102,12 @@ class GroupService:
         with self.connect_to_group_service() as channel:
             client = GroupServiceStub(channel)
             try:
-                return find_teacher(client, find_teacher_request)
+                teacher = find_teacher(client, find_teacher_request)
+                return response.TeacherResponse(
+                    teacher_id=teacher.teacher_id,
+                    email=teacher.email,
+                    username=teacher.username
+                )
             except Exception as e:
                 logging.error(f"Find teacher failed: {e}")
                 raise Exception("Cannot find teacher") from e
@@ -101,7 +118,18 @@ class GroupService:
         with self.connect_to_group_service() as channel:
             client = GroupServiceStub(channel)
             try:
-                return find_groups_teacher(client, find_groups_teacher_request)
+                groups: list[response.GroupResponse] = []
+                resp = find_groups_teacher(client, find_groups_teacher_request)
+                for group in resp:
+                    groups.append(
+                        response.GroupResponse(
+                            user_id=group.user_id,
+                            group_id=group.group_id,
+                            title=group.title,
+                            students=group.students
+                        )
+                    )
+                return groups
             except Exception as e:
                 logging.error(f"Find groups teacher failed: {e}")
                 raise Exception("Cannot find groups teacher") from e
@@ -112,7 +140,18 @@ class GroupService:
         with self.connect_to_group_service() as channel:
             client = GroupServiceStub(channel)
             try:
-                return find_groups_student(client, find_groups_student_request)
+                groups: list[response.GroupResponse] = []
+                resp = find_groups_student(client, find_groups_student_request)
+                for group in resp:
+                    groups.append(
+                        response.GroupResponse(
+                            user_id=group.user_id,
+                            group_id=group.group_id,
+                            title=group.title,
+                            students=group.students
+                        )
+                    )
+                return groups
             except Exception as e:
                 logging.error(f"Find groups student failed: {e}")
                 raise Exception("Cannot find groups student") from e
@@ -121,7 +160,14 @@ class GroupService:
         with self.connect_to_group_service() as channel:
             client = GroupServiceStub(channel)
             try:
-                return get_statistics(client, get_statistics_request)
+                stat = get_statistics(client, get_statistics_request)
+                return response.StatisticsResponse(
+                    statistics_id=stat.stat_id,
+                    group_id=stat.group_id,
+                    teacher_id=stat.teacher_id,
+                    student_id=stat.student_id,
+                    words=stat.words
+                )
             except Exception as e:
                 logging.error(f"Get statistics failed: {e}")
                 raise Exception("Cannot get statistics") from e

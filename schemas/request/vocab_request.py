@@ -1,8 +1,9 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
 class CreateWordRequest(BaseModel):
-    token: str
+    token: Optional[str] = None
     word: str
     definition: str
 
@@ -11,7 +12,7 @@ class CreateWordRequest(BaseModel):
 
 
 class DeleteWordRequest(BaseModel):
-    token: str
+    token: Optional[str] = None
     word_id: int
 
     class Config:
@@ -27,14 +28,14 @@ class FindWordRequest(BaseModel):
 
 class VocabRequest(BaseModel):
     token_type: str  # Bearer
-    token: str
+    token: Optional[str] = None
 
     class Config:
         from_attributes = True
 
 
 class UpdateWordRequest(BaseModel):
-    token: str
+    token: Optional[str] = None
     word_id: int
     definition: str
 
@@ -43,7 +44,7 @@ class UpdateWordRequest(BaseModel):
 
 
 class UpdateWordStatusRequest(BaseModel):
-    token: str
+    token: Optional[str] = None
     word_id: int
     is_learned: bool
 
@@ -52,7 +53,7 @@ class UpdateWordStatusRequest(BaseModel):
 
 
 class ManageTrainingsRequest(BaseModel):
-    token: str
-    training_result: bool
+    token: Optional[str] = None
+    result: bool
     training: str
-    word_id: int
+    word_id: Optional[int] = None

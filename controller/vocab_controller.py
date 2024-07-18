@@ -2,7 +2,6 @@ import logging
 from fastapi import APIRouter, Request
 from fastapi.exceptions import HTTPException
 
-from schemas.response.vocab_response import VocabResponse
 from schemas.request.vocab_request import (
     CreateWordRequest,
     DeleteWordRequest,
@@ -25,6 +24,8 @@ router = APIRouter(
 
 @router.post("")
 def create_word(request: Request, create_word_request: CreateWordRequest):
+    token = get_token(request=request)
+    create_word_request.token = token
     try:
         VocabService().create_word(create_word_request)
         return Response(
@@ -37,8 +38,9 @@ def create_word(request: Request, create_word_request: CreateWordRequest):
 
 @router.delete("/{word_id}")
 def delete_word(request: Request, word_id: int):
+    token = get_token(request=request)
     try:
-        VocabService().delete_word(DeleteWordRequest(token="", word_id=word_id))
+        VocabService().delete_word(DeleteWordRequest(token=token, word_id=word_id))
         return Response(code=200, status="Ok", message="Successfully deleted word!")
     except Exception as e:
         logging.error(f"Delete word failed: {e}")
@@ -62,6 +64,8 @@ def get_words(request: Request):
 
 @router.patch("/{word_id}")
 def update_word(request: Request, word_id: int, update_word_request: UpdateWordRequest):
+    token = get_token(request=request)
+    update_word_request.token = token
     update_word_request.word_id = word_id
     try:
         VocabService().update_word(update_word_request)
@@ -75,7 +79,8 @@ def update_word(request: Request, word_id: int, update_word_request: UpdateWordR
 def update_word_status(
     request: Request, word_id: int, update_word_status_request: UpdateWordStatusRequest
 ):
-    
+    token = get_token(request=request)
+    update_word_status_request.token = token
 
     update_word_status_request.word_id = word_id
     try:
@@ -92,6 +97,8 @@ def update_word_status(
 def manage_trainings(
     request: Request, word_id: int, manage_trainings_request: ManageTrainingsRequest
 ):
+    token = get_token(request=request)
+    manage_trainings_request.token = token
     manage_trainings_request.word_id = word_id
     try:
         VocabService().manage_trainings(manage_trainings_request)
@@ -104,7 +111,8 @@ def manage_trainings(
 
 
 @router.get("/{word_id}")
-def find_word(request: Request, find_word_request: FindWordRequest):
+def find_word(request: Request, word_id: int):
+    find_word_request = FindWordRequest(word_id=word_id)
     try:
         word = VocabService().find_word(find_word_request)
         if not word:
@@ -112,6 +120,8 @@ def find_word(request: Request, find_word_request: FindWordRequest):
                 status_code=404,
                 detail=f"Word with id {find_word_request.word_id} not found",
             )
-        return Response(code=200, status="Ok", data=word)
+        return Response(
+            code=200, status="Ok", message="Successfully found word!", data=word
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to retrieve word: {e}")

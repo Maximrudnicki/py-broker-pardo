@@ -95,7 +95,7 @@ def manage_trainings(
 ) -> None:
     req = ManageTrainingsRequest(
         id=request.word_id,
-        res=request.training_result,
+        res=request.result,
         training=request.training,
         token=request.token,
     )

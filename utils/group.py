@@ -119,10 +119,12 @@ def find_groups_teacher(
     client: GroupServiceStub, request: requests.FindGroupsTeacherRequest
 ) -> list[GroupResponse]:
     req = FindGroupsTeacherRequest(token=request.token)
-
+    group_list = []
     try:
-        res = client.FindGroupsTeacher(req)
-        return res
+        stream = client.FindGroupsTeacher(req)
+        for res in stream:
+            group_list.append(res)
+        return group_list
     except grpc.RpcError as e:
         logging.error(f"Error happened while finding groups: {e}")
         raise Exception("Error happened while finding groups") from e
@@ -132,10 +134,12 @@ def find_groups_student(
     client: GroupServiceStub, request: requests.FindGroupsStudentRequest
 ) -> list[GroupResponse]:
     req = FindGroupsStudentRequest(token=request.token)
-
+    group_list = []
     try:
-        res = client.FindGroupsStudent(req)
-        return res
+        stream = client.FindGroupsStudent(req)
+        for res in stream:
+            group_list.append(res)
+        return group_list
     except grpc.RpcError as e:
         logging.error(f"Error happened while finding groups: {e}")
         raise Exception("Error happened while finding groups") from e

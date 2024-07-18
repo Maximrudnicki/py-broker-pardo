@@ -1,13 +1,13 @@
 from pydantic import BaseModel, EmailStr
-from typing import List
-from vocab_response import VocabResponse
+
+from schemas.response.vocab_response import VocabResponse
 
 
 class GroupResponse(BaseModel):
     user_id: int
     group_id: str
     title: str
-    students: List[int]
+    students: list[int]
 
 
 class StudentResponse(BaseModel):
@@ -26,7 +26,7 @@ class StatisticsResponse(BaseModel):
     group_id: str
     teacher_id: int
     student_id: int
-    words: List[int]
+    words: list[int]
 
 
 class AddWordToUserResponse(BaseModel):
@@ -43,4 +43,4 @@ class StudentInformation(BaseModel):
     student_id: int
     email: EmailStr
     username: str
-    words: List[VocabResponse]
+    words: list[VocabResponse]

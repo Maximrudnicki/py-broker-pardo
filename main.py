@@ -26,7 +26,6 @@ app.add_middleware(
         "Set-Cookie",
         "Access-Control-Allow-Headers",
         "Access-Control-Allow-Origin",
-        "Access-Control-Allow-Origin",
         "Authorization",
     ],
 )

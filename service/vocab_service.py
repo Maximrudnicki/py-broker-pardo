@@ -56,17 +56,19 @@ class VocabService:
                 resp = get_words(client, vocab_request)
 
                 for word in resp:
-                    words.append(response.VocabResponse(
-                        id=word.id,
-                        word=word.word,
-                        definition=word.definition,
-                        created_at=timestamp_to_datetime(word.createdAt),
-                        is_learned=word.isLearned,
-                        cards=word.cards,
-                        word_translation=word.wordTranslation,
-                        constructor=word.constructor,
-                        word_audio=word.wordAudio
-                    ))
+                    words.append(
+                        response.VocabResponse(
+                            id=word.id,
+                            word=word.word,
+                            definition=word.definition,
+                            created_at=timestamp_to_datetime(word.createdAt),
+                            is_learned=word.isLearned,
+                            cards=word.cards,
+                            word_translation=word.wordTranslation,
+                            constructor=word.constructor,
+                            word_audio=word.wordAudio,
+                        )
+                    )
 
                 return words
             except Exception as e:
@@ -77,7 +79,18 @@ class VocabService:
         with self.connect_to_vocab_service() as channel:
             client = VocabServiceStub(channel)
             try:
-                return find_word(client, find_word_request)
+                res = find_word(client, find_word_request)
+                return response.VocabResponse(
+                    id=res.id,
+                    word=res.word,
+                    definition=res.definition,
+                    created_at=timestamp_to_datetime(res.createdAt),
+                    is_learned=res.isLearned,
+                    cards=res.cards,
+                    word_translation=res.wordTranslation,
+                    constructor=res.constructor,
+                    word_audio=res.wordAudio,
+                )
             except Exception as e:
                 logging.error(f"Find word failed: {e}")
                 raise Exception("Cannot find word") from e
