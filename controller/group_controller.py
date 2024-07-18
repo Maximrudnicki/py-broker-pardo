@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, status
 
 from schemas.request.group_request import (
     AddStudentRequest,
@@ -16,7 +16,6 @@ from schemas.request.group_request import (
 )
 from schemas.request.vocab_request import FindWordRequest
 from schemas.response.group_response import StudentInformation
-from schemas.response.vocab_response import VocabResponse
 from service.group_service import GroupService
 from schemas.response.web_response import Response
 from service.vocab_service import VocabService
@@ -28,7 +27,7 @@ router = APIRouter(
 )
 
 
-@router.post("/add")
+@router.post("/add", status_code=status.HTTP_200_OK)
 def add_student(request: Request, add_student_request: AddStudentRequest):
     token = get_token(request=request)
     add_student_request.token = token
@@ -40,7 +39,7 @@ def add_student(request: Request, add_student_request: AddStudentRequest):
         raise HTTPException(status_code=500, detail="Cannot add student")
 
 
-@router.post("/add_word")
+@router.post("/add_word", status_code=status.HTTP_200_OK)
 def add_word_to_user(request: Request, add_word_to_user_request: AddWordToUserRequest):
     token = get_token(request=request)
     add_word_to_user_request.token = token
@@ -55,7 +54,7 @@ def add_word_to_user(request: Request, add_word_to_user_request: AddWordToUserRe
         raise HTTPException(status_code=500, detail="Cannot create group")
 
 
-@router.post("")
+@router.post("", status_code=status.HTTP_201_CREATED)
 def create_group(request: Request, create_group_request: CreateGroupRequest):
     token = get_token(request=request)
     create_group_request.token = token
@@ -69,7 +68,7 @@ def create_group(request: Request, create_group_request: CreateGroupRequest):
         raise HTTPException(status_code=500, detail="Cannot create group")
 
 
-@router.delete("/{groupId}")
+@router.delete("/{groupId}", status_code=status.HTTP_200_OK)
 def delete_group(request: Request, delete_group_request: DeleteGroupRequest):
     token = get_token(request=request)
     delete_group_request.token = token
@@ -83,7 +82,7 @@ def delete_group(request: Request, delete_group_request: DeleteGroupRequest):
         raise HTTPException(status_code=500, detail="Cannot delete group")
 
 
-@router.post("/find")
+@router.post("/find", status_code=status.HTTP_200_OK)
 def find_group(request: Request, find_group_request: FindGroupRequest):
     token = get_token(request=request)
     find_group_request.token = token
@@ -139,7 +138,7 @@ def find_group(request: Request, find_group_request: FindGroupRequest):
         raise HTTPException(status_code=500, detail="Cannot find group")
 
 
-@router.get("/find_student")
+@router.get("/find_student", status_code=status.HTTP_200_OK)
 def find_groups_student(request: Request):
     token = get_token(request=request)
     find_groups_student_request = FindGroupsStudentRequest(token=token)
@@ -153,7 +152,7 @@ def find_groups_student(request: Request):
         raise HTTPException(status_code=500, detail="Cannot find student's groups")
 
 
-@router.get("/find_teacher")
+@router.get("/find_teacher", status_code=status.HTTP_200_OK)
 def find_groups_teacher(request: Request):
     token = get_token(request=request)
     find_groups_teacher_request = FindGroupsTeacherRequest(token=token)
@@ -167,7 +166,7 @@ def find_groups_teacher(request: Request):
         raise HTTPException(status_code=500, detail="Cannot find teacher's groups")
 
 
-@router.post("/find_teacher_info")
+@router.post("/find_teacher_info", status_code=status.HTTP_200_OK)
 def find_teacher(request: Request, find_teacher_request: FindTeacherRequest):
     token = get_token(request=request)
     find_teacher_request.token = token
@@ -181,7 +180,7 @@ def find_teacher(request: Request, find_teacher_request: FindTeacherRequest):
         raise HTTPException(status_code=500, detail="Cannot find teacher's groups")
 
 
-@router.post("/find_student_info")
+@router.post("/find_student_info", status_code=status.HTTP_200_OK)
 def find_student(request: Request, find_student_request: FindStudentRequest):
     token = get_token(request=request)
     find_student_request.token = token
@@ -195,7 +194,7 @@ def find_student(request: Request, find_student_request: FindStudentRequest):
         raise HTTPException(status_code=500, detail="Cannot find student")
 
 
-@router.post("/get_statistics")
+@router.post("/get_statistics", status_code=status.HTTP_200_OK)
 def get_statistics(request: Request, get_statistics_request: GetStatisticsRequest):
     token = get_token(request=request)
     get_statistics_request.token = token
@@ -233,7 +232,7 @@ def get_statistics(request: Request, get_statistics_request: GetStatisticsReques
         raise HTTPException(status_code=500, detail="Cannot get statistics")
 
 
-@router.patch("/remove")
+@router.patch("/remove", status_code=status.HTTP_200_OK)
 def remove_student(request: Request, remove_student_request: RemoveStudentRequest):
     token = get_token(request=request)
     remove_student_request.token = token

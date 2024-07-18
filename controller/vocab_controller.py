@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, status
 from fastapi.exceptions import HTTPException
 
 from schemas.request.vocab_request import (
@@ -22,7 +22,7 @@ router = APIRouter(
 )
 
 
-@router.post("")
+@router.post("", status_code=status.HTTP_201_CREATED)
 def create_word(request: Request, create_word_request: CreateWordRequest):
     token = get_token(request=request)
     create_word_request.token = token
@@ -36,7 +36,7 @@ def create_word(request: Request, create_word_request: CreateWordRequest):
         raise HTTPException(status_code=500, detail="Cannot create word")
 
 
-@router.delete("/{word_id}")
+@router.delete("/{word_id}", status_code=status.HTTP_200_OK)
 def delete_word(request: Request, word_id: int):
     token = get_token(request=request)
     try:
@@ -47,7 +47,7 @@ def delete_word(request: Request, word_id: int):
         raise HTTPException(status_code=500, detail="Cannot delete word")
 
 
-@router.get("")
+@router.get("", status_code=status.HTTP_200_OK)
 def get_words(request: Request):
     token = get_token(request=request)
 
@@ -62,7 +62,7 @@ def get_words(request: Request):
         raise HTTPException(status_code=500, detail="Cannot get words")
 
 
-@router.patch("/{word_id}")
+@router.patch("/{word_id}", status_code=status.HTTP_200_OK)
 def update_word(request: Request, word_id: int, update_word_request: UpdateWordRequest):
     token = get_token(request=request)
     update_word_request.token = token
@@ -75,7 +75,7 @@ def update_word(request: Request, word_id: int, update_word_request: UpdateWordR
         raise HTTPException(status_code=500, detail="Cannot update word")
 
 
-@router.patch("/{word_id}/status")
+@router.patch("/{word_id}/status", status_code=status.HTTP_200_OK)
 def update_word_status(
     request: Request, word_id: int, update_word_status_request: UpdateWordStatusRequest
 ):
@@ -93,7 +93,7 @@ def update_word_status(
         raise HTTPException(status_code=500, detail="Cannot update word status")
 
 
-@router.patch("/{word_id}/trainings")
+@router.patch("/{word_id}/trainings", status_code=status.HTTP_200_OK)
 def manage_trainings(
     request: Request, word_id: int, manage_trainings_request: ManageTrainingsRequest
 ):
@@ -110,7 +110,7 @@ def manage_trainings(
         raise HTTPException(status_code=500, detail="Cannot manage trainings")
 
 
-@router.get("/{word_id}")
+@router.get("/{word_id}", status_code=status.HTTP_200_OK)
 def find_word(request: Request, word_id: int):
     find_word_request = FindWordRequest(word_id=word_id)
     try:

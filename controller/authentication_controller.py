@@ -1,8 +1,7 @@
 import logging
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from schemas.request.authentication_request import RegisterRequest, LoginRequest
-from schemas.response.authentication_response import LoginResponse
 from schemas.response.web_response import Response
 from service.authentication_service import AuthenticationService
 
@@ -12,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.post("/register")
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 def register(register_request: RegisterRequest):
     try:
         AuthenticationService().register(register_request)
@@ -24,7 +23,7 @@ def register(register_request: RegisterRequest):
         raise Exception("Cannot register") from e
 
 
-@router.post("/login")
+@router.post("/login", status_code=status.HTTP_200_OK)
 def login(login_request: LoginRequest):
     try:
         resp = AuthenticationService().login(login_request)
