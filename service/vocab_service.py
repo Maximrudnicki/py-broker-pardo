@@ -1,6 +1,7 @@
 import logging
 import grpc
 
+from vocab_pb2 import VocabRequest
 from vocab_pb2_grpc import VocabServiceStub
 
 from schemas.request import vocab_request as requests
@@ -53,7 +54,7 @@ class VocabService:
             client = VocabServiceStub(channel)
             try:
                 words: list[response.VocabResponse] = []
-                resp = get_words(client, vocab_request)
+                resp = get_words(client, VocabRequest(token=vocab_request.token))
 
                 for word in resp:
                     words.append(

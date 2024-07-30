@@ -14,6 +14,7 @@ from schemas.request.vocab_request import (
 from service.vocab_service import VocabService
 from schemas.response.web_response import Response
 
+from utils.time import datetime_to_timestamp
 from utils.token import get_token
 
 router = APIRouter(
@@ -54,8 +55,13 @@ def get_words(request: Request):
     vocab_request = VocabRequest(token_type="Bearer", token=token)
     try:
         words = VocabService().get_words(vocab_request)
+        res: list[dict] = []
+        for word in words:
+            result = word.model_dump()
+            result['created_at'] = datetime_to_timestamp(word.created_at)
+            res.append(result)
         return Response(
-            code=200, status="Ok", message="Successfully got words!", data=words
+            code=200, status="Ok", message="Successfully got words!", data=res
         )
     except Exception as e:
         logging.error(f"Get words failed: {e}")
@@ -115,13 +121,16 @@ def find_word(request: Request, word_id: int):
     find_word_request = FindWordRequest(word_id=word_id)
     try:
         word = VocabService().find_word(find_word_request)
+        res = word.model_dump()
+        res['created_at'] = datetime_to_timestamp(word.created_at)
+
         if not word:
             raise HTTPException(
                 status_code=404,
                 detail=f"Word with id {find_word_request.word_id} not found",
             )
         return Response(
-            code=200, status="Ok", message="Successfully found word!", data=word
+            code=200, status="Ok", message="Successfully found word!", data=res
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to retrieve word: {e}")

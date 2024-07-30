@@ -28,7 +28,7 @@ def create_word(client: VocabServiceStub, request: requests.CreateWordRequest) -
 
 
 def get_words(
-    client: VocabServiceStub, request: requests.VocabRequest
+    client: VocabServiceStub, request: VocabRequest
 ) -> list[VocabResponse]:
     vocab_list = []
 

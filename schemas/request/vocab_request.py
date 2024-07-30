@@ -36,7 +36,7 @@ class VocabRequest(BaseModel):
 
 class UpdateWordRequest(BaseModel):
     token: Optional[str] = None
-    word_id: int
+    word_id: Optional[int] = None
     definition: str
 
     class Config:
